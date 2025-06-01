@@ -9,6 +9,8 @@ import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react
 // Import types from the new shared types file
 import { LocationData } from '../types'; // Adjust path if types.ts is elsewhere
 
+import MapComponent from './MapComponent';
+
 
 // --- Import your incident data from the JSON file ---
 // !!! IMPORTANT: Ensure this path is correct relative to app/(tabs)/index.tsx !!!
@@ -145,7 +147,7 @@ export default function TabScreen() {
 
       {/* Map Component (will be native or web version based on platform) */}
       {/* Pass the ref and other necessary props */}
-      {/*<MapComponent
+      <MapComponent
           ref={mapRef} // Pass the ref
           locationsData={locationsData} // Pass the data
           selectedIncidentId={selectedIncidentId} // Pass the selected ID
@@ -153,7 +155,7 @@ export default function TabScreen() {
           // Add an initialRegion prop here if you want to center the map on data
           initialRegion={{ latitude: 53.4237, longitude: -7.9383, latitudeDelta: 6, longitudeDelta: 6 }} // Example Ireland region
       />
-      */}
+      }
 
       {/* FlatList Component to display the list of incident cards */}
       {/* Attach the listRef to be able to call its methods */}
