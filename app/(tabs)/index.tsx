@@ -11,17 +11,14 @@ import { LocationData } from '../types'; // Adjust path if types.ts is elsewhere
 
 import MapComponent from './MapComponent';
 
-
 // --- Import your incident data from the JSON file ---
 // !!! IMPORTANT: Ensure this path is correct relative to app/(tabs)/index.tsx !!!
 // If your incidents_data.json is in olympic-maps/app/data/, this path '../data/incidents_data.json' is correct.
 // If it's elsewhere, you MUST adjust this line.
 import incidentsData from '../data/incidents_data.json';
 
-
 // --- Use the imported data ---
 const locationsData: LocationData[] = incidentsData as LocationData[]; // Add type assertion
-
 
 // Define a fixed height for list items for FlatList performance (getItemLayout)
 const ITEM_HEIGHT = 140; // Adjust this value if your card layout changes significantly
@@ -42,6 +39,7 @@ export default function TabScreen() {
   const handleMarkerPress = (incident: LocationData) => { // Add type annotation
     // Set the state to the ID of the pressed incident
     setSelectedIncidentId(incident.id);
+    console.log('Marker pressed - Selected ID:', incident.id);
 
     // Find the index of this incident in our data array
     const index = locationsData.findIndex(item => item.id === incident.id);
@@ -68,39 +66,41 @@ export default function TabScreen() {
         longitudeDelta: 0.05, // Adjust zoom level
       }, 300); // Animation duration in milliseconds
 
-      // The card style and marker color will change automatically because the state updated
+      // The is where I am debugging two way action now working...
     } else if (mapRef.current && incident.coordinates) {
-        // Basic handling for web placeholder or future web map without animateToRegion
-        console.log("Card pressed:", incident.location_name, incident.coordinates);
-        // Potentially implement pan/zoom logic for the web map here later
+      console.log("Card pressed:", incident.location_name, incident.coordinates);
+      mapRef.current.panTo({
+        lat: incident.coordinates.latitude,
+        lng: incident.coordinates.longitude,
+      });
+      // You might also want to adjust the zoom level using mapRef.current.setZoom(someValue);
     }
   };
-
 
   // --- Render function for each item in the FlatList ---
   const renderLocationItem = ({ item, index }: { item: LocationData; index: number }) => ( // Add type annotation
     // TouchableOpacity makes the card tappable and provides visual feedback
     <TouchableOpacity
-        // Apply the base card style, and add the 'selectedCard' style if this item is currently selected
-        style={[styles.card, selectedIncidentId === item.id && styles.selectedCard]}
-        onPress={() => handleCardPress(item)} // Call our handler when the card is pressed
-        activeOpacity={0.8} // How transparent the card becomes when pressed
+      // Apply the base card style, and add the 'selectedCard' style if this item is currently selected
+      style={[styles.card, selectedIncidentId === item.id && styles.selectedCard]}
+      onPress={() => handleCardPress(item)} // Call our handler when the card is pressed
+      activeOpacity={0.8} // How transparent the card becomes when pressed
     >
       {/* Image component - conditionally rendered if item.image_url exists */}
       {item.image_url && (
-          <Image
-            source={{ uri: item.image_url }} // Load image from the URL
-            style={styles.cardImage} // Apply styling
-            resizeMode="cover" // How the image should be scaled
-            onError={(e) => console.warn('Image failed to load:', item.image_url, e.nativeEvent.error)} // Basic error handling
-          />
+        <Image
+          source={{ uri: item.image_url }} // Load image from the URL
+          style={styles.cardImage} // Apply styling
+          resizeMode="cover" // How the image should be scaled
+          onError={(e) => console.warn('Image failed to load:', item.image_url, e.nativeEvent.error)} // Basic error handling
+        />
       )}
       {/* Placeholder View if no image_url or image fails to load */}
-       {!item.image_url && ( // Check if image_url is falsy
+        {!item.image_url && ( // Check if image_url is falsy
           <View style={styles.cardImagePlaceholder}>
-              <Text style={styles.cardImagePlaceholderText}>No Image</Text>
+            <Text style={styles.cardImagePlaceholderText}>No Image</Text>
           </View>
-      )}
+        )}
 
       {/* View to hold the text details, placed next to the image */}
       <View style={styles.cardDetails}>
@@ -110,26 +110,24 @@ export default function TabScreen() {
         {/* Safely access event_date and split only if it exists */}
         <Text style={styles.cardYear}>Year: {item.year} ({item.event_date ? new Date(item.event_date).toLocaleDateString() : 'N/A'})</Text>
 
-
         {/* --- Additional Details from JSON --- */}
         {/* Conditionally render Root Cause if it's available and not the default placeholder */}
         {item.root_cause && item.root_cause !== 'Unknown Cause' && (
             <Text style={styles.cardDetailText}>Root Cause: {item.root_cause}</Text>
         )}
-         {/* Conditionally render Failed Element if available and not the default placeholder */}
+          {/* Conditionally render Failed Element if available and not the default placeholder */}
         {item.failed_element && item.failed_element !== 'Unknown Element' && (
             <Text style={styles.cardDetailText}>Failed Element: {item.failed_element}</Text>
         )}
         {/* Conditionally render Description if available, not the default placeholder, and not just whitespace */}
         {item.description && item.description !== 'No description' && item.description.trim() && (
-             // Limit description to 3 lines to keep cards consistent
+            // Limit description to 3 lines to keep cards consistent
             <Text style={styles.cardDescription} numberOfLines={3}>{item.description.trim()}</Text>
         )}
         {/* Add more Text elements here for other fields like Capacity, Integrator, etc.
-             Remember to add corresponding styles in the StyleSheet below if needed.
-         {item.capacity_mwh != null && <Text style={styles.cardDetailText}>Capacity (MWh): {item.capacity_mwh}</Text>}
-         */}
-
+            Remember to add corresponding styles in the StyleSheet below if needed.
+        {item.capacity_mwh != null && <Text style={styles.cardDetailText}>Capacity (MWh): {item.capacity_mwh}</Text>}
+        */}
       </View>
     </TouchableOpacity>
   );
@@ -139,23 +137,20 @@ export default function TabScreen() {
     { length: ITEM_HEIGHT, offset: ITEM_HEIGHT * index, index }
   );
 
-
-// --- Main Render Function ---
+  // --- Main Render Function ---
   return (
     // The main container View that stacks the Map and the List vertically
     <View style={styles.container}>
-
       {/* Map Component (will be native or web version based on platform) */}
       {/* Pass the ref and other necessary props */}
       <MapComponent
-          ref={mapRef} // Pass the ref
-          locationsData={locationsData} // Pass the data
-          selectedIncidentId={selectedIncidentId} // Pass the selected ID
-          handleMarkerPress={handleMarkerPress} // Pass the press handler
-          // Add an initialRegion prop here if you want to center the map on data
-          initialRegion={{ latitude: 53.4237, longitude: -7.9383, latitudeDelta: 6, longitudeDelta: 6 }} // Example Ireland region
+        ref={mapRef} // Pass the ref
+        locationsData={locationsData} // Pass the data
+        selectedIncidentId={selectedIncidentId} // Pass the selected ID
+        handleMarkerPress={handleMarkerPress} // Pass the press handler
+        // Add an initialRegion prop here if you want to center the map on data
+        initialRegion={{ latitude: 53.4237, longitude: -7.9383, latitudeDelta: 6, longitudeDelta: 6 }} // Example Ireland region
       />
-      }
 
       {/* FlatList Component to display the list of incident cards */}
       {/* Attach the listRef to be able to call its methods */}
@@ -168,7 +163,6 @@ export default function TabScreen() {
         contentContainerStyle={styles.listContent} // Styles for the content *inside* the list (like padding)
         getItemLayout={getItemLayout} // Required for efficient scrollToIndex performance
       />
-
     </View>
   );
 }
@@ -212,7 +206,7 @@ const styles = StyleSheet.create({
       borderColor: 'blue', // Example: Add a blue border
       borderWidth: 2,
       // backgroundColor: '#e0f7fa', // Example: light blue background
-   },
+  },
   cardImage: { // Style for the image component within the card
     width: 70, // Fixed width for the image
     height: 100, // Fixed height for the image (adjust if your images have a different aspect ratio you want to maintain)
@@ -229,12 +223,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#eee',
     justifyContent: 'center', // Center the text horizontally inside this box
     alignItems: 'center', // Center the text vertically inside this box
-   },
+  },
     cardImagePlaceholderText: { // Style for the "No Image" text
       fontSize: 10,
       textAlign: 'center',
       color: '#666', // Muted color
-   },
+  },
   cardDetails: { // Style for the View containing the text details
     flex: 1, // Make this View take up the remaining horizontal space next to the image
     justifyContent: 'center', // Vertically center the text lines within this view
@@ -252,10 +246,10 @@ const styles = StyleSheet.create({
       fontSize: 12,
       color: '#555', // Slightly darker than year, but still muted
       marginTop: 2, // Space between these detail lines
-   },
+  },
     cardDescription: { // Style for the Description text
-      fontSize: 12,
-      color: '#333', // Darker color for main description text
-      marginTop: 4, // Space above the description
-   }
+    fontSize: 12,
+    color: '#333', // Darker color for main description text
+    marginTop: 4, // Space above the description
+  },
 });
