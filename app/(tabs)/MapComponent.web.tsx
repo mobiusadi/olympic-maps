@@ -9,7 +9,7 @@ import { MapComponentProps } from '../types'; // Adjust path if types.ts is else
 import { GoogleMap, MarkerF, useLoadScript } from '@react-google-maps/api';
 
 const libraries: (keyof google.maps.ControlPosition | keyof google.maps.Data.DrawingMode | keyof google.maps.MapTypeId | keyof google.maps.DrawingMode | keyof google.maps.OverlayView)[] = [];
-const googleMapsApiKey = 'AIzaSyDRZbGauJmIfVHV3R9Y8GoS9rp2Jlbvtyg'; // <--- REPLACE WITH YOUR KEY
+const googleMapsApiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY; // <--- THIS AVOIDS HARDCODING API KEY
 
 const defaultMapOptions = {
     zoom: 5,
