@@ -1,5 +1,6 @@
 // app/(tabs)/MapComponent.web.tsx - REWRITTEN FOR WEB USING @react-google-maps/api
 
+import Constants from 'expo-constants'; // this line was added to solve API issue
 import React, { useCallback, useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native'; // Keep React Native imports for web styling/Views/Text
 // Import types from the shared types file
@@ -9,7 +10,7 @@ import { MapComponentProps } from '../types'; // Adjust path if types.ts is else
 import { GoogleMap, MarkerF, useLoadScript } from '@react-google-maps/api';
 
 const libraries: (keyof google.maps.ControlPosition | keyof google.maps.Data.DrawingMode | keyof google.maps.MapTypeId | keyof google.maps.DrawingMode | keyof google.maps.OverlayView)[] = [];
-const googleMapsApiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY; // <--- THIS AVOIDS HARDCODING API KEY
+const googleMapsApiKey = Constants.expoConfig.extra.googleMapsApiKey; // <--- THIS IS THE NEW LINE
 
 const defaultMapOptions = {
     zoom: 5,
