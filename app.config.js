@@ -1,5 +1,5 @@
-{
-  "expo": {
+module.exports = {
+  expo: {
     "name": "olympic-maps",
     "slug": "olympic-maps",
     "version": "1.0.0",
@@ -40,9 +40,12 @@
       "typedRoutes": true
     },
     "extra": {
-  "router": {},
-  "eas": {
-    "projectId": "2ac048e0-74e8-4087-b415-133d0c715a2e"
-  },
-  "googleMapsApiKey": process.env.NEXT_PUBLIC_Maps_API_KEY
-}
+      "router": {},
+      "eas": {
+        "projectId": "2ac048e0-74e8-4087-b415-133d0c715a2e"
+      },
+      // THIS IS THE CORRECTED LINE:
+      "googleMapsApiKey": process.env.NEXT_PUBLIC_Maps_API_KEY
+    }
+  }
+};
