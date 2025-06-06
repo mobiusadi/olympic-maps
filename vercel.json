@@ -1,5 +1,4 @@
 {
-  "outputDirectory": "dist",
   "buildCommand": "npm run build",
   "env": {
     "NEXT_PUBLIC_Maps_API_KEY": "@next_public_Maps_api_key"
