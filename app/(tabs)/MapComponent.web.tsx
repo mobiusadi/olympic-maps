@@ -10,7 +10,13 @@ import { MapComponentProps } from '../types'; // Adjust path if types.ts is else
 import { GoogleMap, MarkerF, useLoadScript } from '@react-google-maps/api';
 
 const libraries: (keyof google.maps.ControlPosition | keyof google.maps.Data.DrawingMode | keyof google.maps.MapTypeId | keyof google.maps.DrawingMode | keyof google.maps.OverlayView)[] = [];
-const googleMapsApiKey = Constants.expoConfig.extra.googleMapsApiKey; // <--- THIS IS THE NEW LINE
+
+// --- START API TROUBLESHOOTING REBUILD MARKER (Delete later if desired) ---
+const googleMapsApiKey = Constants.expoConfig.extra.googleMapsApiKey;
+// --- END API TROUBLESHOOTING REBUILD MARKER ---
+
+
+
 
 const defaultMapOptions = {
     zoom: 5,
