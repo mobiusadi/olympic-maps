@@ -1,21 +1,8 @@
 // app.config.js
-const fs = require('fs');
-const path = require('path');
-const dotenv = require('dotenv');
 
-// Manually read and parse the .env file
-let env = {};
-try {
-  const envPath = path.resolve(__dirname, '.env');
-  if (fs.existsSync(envPath)) {
-    env = dotenv.parse(fs.readFileSync(envPath));
-  }
-} catch (e) {
-  console.warn("Failed to load .env file:", e);
-}
-
-// Now 'env' object contains your variables (e.g., env.NEXT_PUBLIC_Maps_API_KEY)
-// The rest of your app.config.js code will then use this 'env' object.
+// No need for fs, path, or manual dotenv.parse() here.
+// process.env will be populated by your local environment (from .env file)
+// and by Vercel during deployment (from Vercel's Environment Variables settings).
 
 module.exports = {
   expo: {
@@ -63,7 +50,7 @@ module.exports = {
       "eas": {
         "projectId": "2ac048e0-74e8-4087-b415-133d0c715a2e"
       },
-      // THIS IS THE CORRECTED LINE:
+      // This is the correct, standard way for process.env
       "googleMapsApiKey": process.env.NEXT_PUBLIC_Maps_API_KEY
     }
   }
