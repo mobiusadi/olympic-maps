@@ -51,7 +51,7 @@ module.exports = {
         "projectId": "2ac048e0-74e8-4087-b415-133d0c715a2e"
       },
       // This is the correct, standard way for process.env
-      "googleMapsApiKey": process.env.NEXT_PUBLIC_Maps_API_KEY
+      "googleMapsApiKey": process.env.EXPO_PUBLIC_Maps_API_KEY
     }
   }
 };
