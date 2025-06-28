@@ -38,5 +38,6 @@ yarn-error.*
 
 app-example
 
-
+.env
+.env*.local
 .env.local

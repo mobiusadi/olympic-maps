@@ -12,7 +12,8 @@ import { GoogleMap, MarkerF, useLoadScript } from '@react-google-maps/api';
 const libraries: (keyof google.maps.ControlPosition | keyof google.maps.Data.DrawingMode | keyof google.maps.MapTypeId | keyof google.maps.DrawingMode | keyof google.maps.OverlayView)[] = [];
 
 // --- START API TROUBLESHOOTING REBUILD MARKER (Delete later if desired) ---
-const googleMapsApiKey = Constants.expoConfig.extra.googleMapsApiKey;
+const googleMapsApiKey = Constants.expoConfig?.extra?.googleMapsApiKey;
+console.log("Google Maps API Key (from Constants):", googleMapsApiKey);
 // --- END API TROUBLESHOOTING REBUILD MARKER ---
 
 

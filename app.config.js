@@ -1,3 +1,22 @@
+// app.config.js
+const fs = require('fs');
+const path = require('path');
+const dotenv = require('dotenv');
+
+// Manually read and parse the .env file
+let env = {};
+try {
+  const envPath = path.resolve(__dirname, '.env');
+  if (fs.existsSync(envPath)) {
+    env = dotenv.parse(fs.readFileSync(envPath));
+  }
+} catch (e) {
+  console.warn("Failed to load .env file:", e);
+}
+
+// Now 'env' object contains your variables (e.g., env.NEXT_PUBLIC_Maps_API_KEY)
+// The rest of your app.config.js code will then use this 'env' object.
+
 module.exports = {
   expo: {
     "name": "olympic-maps",
