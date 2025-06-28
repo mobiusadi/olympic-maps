@@ -144,6 +144,7 @@ export default function TabScreen() {
       {/* Map Component (will be native or web version based on platform) */}
       {/* Pass the ref and other necessary props */}
       <MapComponent
+        style={styles.map} // <-- ADD THIS LINE
         ref={mapRef} // Pass the ref
         locationsData={locationsData} // Pass the data
         selectedIncidentId={selectedIncidentId} // Pass the selected ID
